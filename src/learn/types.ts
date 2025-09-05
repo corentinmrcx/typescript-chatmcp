@@ -68,6 +68,21 @@ class Circle extends AbstractShape {
     }
 
     getArea(): number {
-        return this.radius;
+        return Math.pow(this.radius, 2) * Math.PI;
     }
 }
+
+
+function printShape(shape: Shape): void {
+    const isPolygon : string = shape.isPolygon ? " est un polygone. " : " n'est pas un polygone. "
+    console.log(shape.name + isPolygon + "Son aire est " + shape.getArea() + ".");
+}
+
+const rectangle = new Rectangle("Rectangle", 2, 4);
+const square = new Square("Carré", 3);
+const circle = new Circle("Cercle", 10);
+
+printShape(rectangle); // doit afficher "Rectangle est un polygone. Son aire est 8."
+printShape(square);    // doit afficher "Carré est un polygone. Son aire est 9."
+printShape(circle);    // doit afficher "Cercle n'est pas un polygone. Son aire est 314.1592653589793"
+                
