@@ -1,4 +1,3 @@
-import { symlink } from 'fs';
 import { ChatModel } from './chat/chat.model';
 import { createInterface } from "readline/promises";
 
