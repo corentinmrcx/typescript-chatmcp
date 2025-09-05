@@ -1,3 +1,4 @@
+import { Rectangle, Square, Circle } from "./shape";
 
 // Ajoutez les annotations de types pour les variables suivantes :
 
@@ -17,61 +18,6 @@ function dotProduct(vector1 : Vector2D, vector2 : Vector2D) {
 
 console.log("dotProduct ---------------------------------------------------");
 console.log(dotProduct({ x : 3, y : 2 }, { x : 4, y : 5 })); // doit afficher 22
-    
-interface Shape {
-    name: string,
-    isPolygon: boolean,
-    getArea(): number
-}
-
-class AbstractShape implements Shape {
-    name: string;
-    isPolygon: boolean;
-
-    constructor(name: string, isPolygon: boolean){
-        this.name = name;
-        this.isPolygon = isPolygon;
-    }
-
-    getArea(): number {
-        return 1;
-    }
-}
-
-class Rectangle extends AbstractShape {
-    width: number;
-    height : number;
-
-    constructor(name: string, width: number, height: number) {
-        super(name, true);
-        this.width = width;
-        this.height = height;
-    }
-
-    getArea(): number {
-        return this.width * this.height;
-    }
-}
-
-class Square extends Rectangle {
-    constructor(name: string, side:number) {
-        super(name, side, side);
-    }
-}
-
-class Circle extends AbstractShape {
-    radius: number;
-
-    constructor(name: string, radius: number) {
-        super(name, false);
-        this.radius = radius;
-    }
-
-    getArea(): number {
-        return Math.pow(this.radius, 2) * Math.PI;
-    }
-}
-
 
 function printShape(shape: Shape): void {
     const isPolygon : string = shape.isPolygon ? " est un polygone. " : " n'est pas un polygone. "
