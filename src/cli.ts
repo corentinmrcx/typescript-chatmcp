@@ -19,12 +19,14 @@ async function main() {
         if (prompt === ""){
             stop = true;
             console.log(COLOR_DEFAULT + "Fin du chat")
+            process.exit();
         }
         else {
             const answer = await chat.send(prompt);
             console.log(COLOR_ANSWER + "Gemini : " + COLOR_DEFAULT, answer);
         }
     }
+    return;
 }
 
 main();
