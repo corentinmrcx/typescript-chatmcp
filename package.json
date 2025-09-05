@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "watch": "npx tsc --watch"
+    "watch": "npx tsc --watch",
+    "cli": "node --env-file=.env dist/cli.js"
   },
   "keywords": [],
   "author": "",
@@ -16,5 +17,9 @@
     "eslint": "^9.34.0",
     "typescript": "^5.9.2",
     "typescript-eslint": "^8.42.0"
+  },
+  "dependencies": {
+    "@ai-sdk/google": "^2.0.12",
+    "ai": "^5.0.33"
   }
 }
