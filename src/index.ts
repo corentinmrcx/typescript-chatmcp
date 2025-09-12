@@ -6,6 +6,8 @@ import { ErrorPageView } from './views/error/error-page';
 const app = express();
 const port = process.env.PORT;
 
+app.use(express.static('public'));
+
 app.get('/', (req: Request, res: Response) => {
     const page = HomeView({ title : 'Homeview'})
     res.send(page);
@@ -14,6 +16,11 @@ app.get('/', (req: Request, res: Response) => {
 app.get('/chat', (req: Request, res: Response) => {
     const date = new Date;
     res.send('Bonjour. Il est ' + date.getHours() + ':' + date.getMinutes() + ':' + date.getSeconds());
+});
+
+app.get('/time', (req: Request, res: Response) => {
+    const date = new Date;
+    return date.getHours();
 });
 
 app.get('/erreur', (req: Request, res: Response) => {
