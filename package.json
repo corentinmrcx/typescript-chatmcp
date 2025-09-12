@@ -23,6 +23,8 @@
   },
   "dependencies": {
     "@ai-sdk/google": "^2.0.12",
+    "@kitajs/html": "^4.2.9",
+    "@kitajs/ts-html-plugin": "^4.1.2",
     "ai": "^5.0.33",
     "bson": "^6.10.4",
     "express": "^5.1.0"

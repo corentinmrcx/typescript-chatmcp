@@ -10,7 +10,10 @@
     // See also https://aka.ms/tsconfig/module
     "module": "nodenext",
     "target": "ES2024",
-    "types": [ "node" ],
+    "types": [
+      "node",
+      "@kitajs/html/htmx.d.ts" 
+    ],
     // For nodejs:
     "lib": ["ES2024"],
     // "types": ["node"],
@@ -36,6 +39,10 @@
     // Recommended Options
     "strict": true,
     "jsx": "react-jsx",
+    "jsxImportSource": "@kitajs/html",
+    "plugins": [{
+        "name": "@kitajs/ts-html-plugin"
+    }],
     "verbatimModuleSyntax": false,
     "isolatedModules": true,
     "noUncheckedSideEffectImports": true,
