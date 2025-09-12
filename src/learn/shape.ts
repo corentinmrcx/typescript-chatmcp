@@ -1,4 +1,4 @@
-interface Shape {
+export interface Shape {
     name: string,
     isPolygon: boolean,
     getArea(): number

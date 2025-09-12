@@ -1,4 +1,4 @@
-import { Rectangle, Square, Circle } from "./shape";
+import { Rectangle, Square, Circle, Shape } from "./shape";
 
 // Ajoutez les annotations de types pour les variables suivantes :
 
