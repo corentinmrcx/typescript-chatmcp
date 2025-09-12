@@ -4,8 +4,9 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "watch": "npx tsc --watch",
-    "cli": "node --env-file=.env dist/cli.js"
+    "cli": "node --env-file=.env dist/cli.js",
+    "start": "node dist/index.js",
+    "watch": "npx tsc-watch --onSuccess \"npm run start\""
   },
   "keywords": [],
   "author": "",
@@ -13,14 +14,17 @@
   "type": "commonjs",
   "devDependencies": {
     "@eslint/js": "^9.34.0",
+    "@types/express": "^5.0.3",
     "@types/node": "^24.3.1",
     "eslint": "^9.34.0",
+    "tsc-watch": "^7.1.1",
     "typescript": "^5.9.2",
     "typescript-eslint": "^8.42.0"
   },
   "dependencies": {
     "@ai-sdk/google": "^2.0.12",
     "ai": "^5.0.33",
-    "bson": "^6.10.4"
+    "bson": "^6.10.4",
+    "express": "^5.1.0"
   }
 }
