@@ -21,7 +21,8 @@ async function main() {
             process.exit();
         }
         else {
-            const answer = await chat.send(prompt);
+            chat.addPrompt(prompt);
+            const answer = await chat.fetchAnswer();
             console.log(COLOR_ANSWER + "Gemini : " + COLOR_DEFAULT, answer);
         }
     }

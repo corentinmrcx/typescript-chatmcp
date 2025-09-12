@@ -15,15 +15,20 @@ export class ChatModel {
     get id(): string {
         return this._chatId;
     }
-    
-    async send(prompt: string): Promise<string> {
+
+    addPrompt(prompt: string): void {
         ChatModel.repository.addMessages(this._chatId, [{ role: 'user', content: prompt }])
-        const { text, response } = await generateText(
-            {
-                model: google(MODEL_NAME),
-                prompt: ChatModel.repository.find(this._chatId)
-            }
-        );
+    }
+
+    private createGenerationConfig(): GenerationConfig {
+        return {
+            model: google(MODEL_NAME),
+            messages: ChatModel.repository.find(this._chatId)
+        }
+    }
+
+    async fetchAnswer(): Promise<string> {
+        const { text, response } = await generateText(this.createGenerationConfig());
         ChatModel.repository.addMessages(this._chatId, response.messages)
         return text;
     }
