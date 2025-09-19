@@ -20,7 +20,7 @@ app.get('/chat', (req: Request, res: Response) => {
 
 app.get('/time', (req: Request, res: Response) => {
     const date = new Date;
-    return date.getHours();
+    res.send(date.getHours());
 });
 
 app.get('/erreur', (req: Request, res: Response) => {

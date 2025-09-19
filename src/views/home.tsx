@@ -12,7 +12,7 @@ export function HomeView(props: { title: string }):JSX.Element {
         <body>
             <h1>{ props.title }</h1>
             <a href="/chat">Chatbot</a>
-            <button hx-post="/time">Heure</button>
+            <button hx-get="/time">Heure</button>
         </body>
         </html>
     </>);
