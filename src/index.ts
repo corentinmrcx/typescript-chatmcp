@@ -1,6 +1,7 @@
 import express, { NextFunction, Request, Response } from 'express';
 import { HomeView } from './views/home';
 import { ErrorPageView } from './views/error/error-page';
+import { chatController } from './chat/chat.controller';
 
 
 const app = express();
@@ -13,10 +14,7 @@ app.get('/', (req: Request, res: Response) => {
     res.send(page);
 });
 
-app.get('/chat', (req: Request, res: Response) => {
-    const date = new Date;
-    res.send('Bonjour. Il est ' + date.getHours() + ':' + date.getMinutes() + ':' + date.getSeconds());
-});
+app.get('/chat', chatController.chat);
 
 app.get('/time', (req: Request, res: Response) => {
     const date = new Date;
