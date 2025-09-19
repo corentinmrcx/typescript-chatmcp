@@ -1,20 +1,18 @@
 import express, { NextFunction, Request, Response } from 'express';
 import { HomeView } from './views/home';
 import { ErrorPageView } from './views/error/error-page';
-import { chatController } from './chat/chat.controller';
-
+import { chatRouter } from './chat/chat.router';
 
 const app = express();
 const port = process.env.PORT;
 
 app.use(express.static('public'));
+app.use('/chat', chatRouter);
 
 app.get('/', (req: Request, res: Response) => {
     const page = HomeView({ title : 'Homeview'})
     res.send(page);
 });
-
-app.get('/chat', chatController.chat);
 
 app.get('/time', (req: Request, res: Response) => {
     const date = new Date;
