@@ -9,7 +9,7 @@ class ChatController {
     }
 
     public sendPrompt(req: Request, res: Response): void {
-        res.send("<p>coucou</p>")
+        res.send("Moi : " + req.body.prompt)
     }
 }
 
