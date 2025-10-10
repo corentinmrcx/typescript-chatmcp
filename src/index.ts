@@ -1,5 +1,6 @@
 import express, { NextFunction, Request, Response } from 'express';
 import { HomeView } from './views/home';
+import { ErrorPageView } from './views/error/error-page';
 import { ErrorDialogView } from './views/error/error-dialog';
 import { chatRouter } from './chat/chat.router';
 
@@ -24,9 +25,13 @@ app.get('/erreur', (req: Request, res: Response) => {
 });
 
 app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
-    console.log(`ERREUR : ${err.message}`);
-    const page = ErrorDialogView({ title: 'Erreur', errorDetail: err.message })
-    res.send(page);
+    if (req.headers['hx-request']){
+        const page = ErrorDialogView({ title: 'Erreur', errorDetail: err.message })
+        res.send(page);
+    }
+    else {
+        res.status(500).send(ErrorPageView)
+    }
 });
 
 app.listen(port, () => {
