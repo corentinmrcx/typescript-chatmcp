@@ -26,6 +26,7 @@ app.get('/erreur', (req: Request, res: Response) => {
 
 app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
     if (req.headers['hx-request']){
+        console.log(err.message);
         const page = ErrorDialogView({ title: 'Erreur', errorDetail: err.message })
         res.send(page);
     }

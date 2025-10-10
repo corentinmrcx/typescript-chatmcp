@@ -1,5 +1,6 @@
 import { Request, Response, NextFunction, RequestHandler } from 'express';
 import { z } from 'zod';
+import { ZodError } from 'zod/v4';
 
 export function validateBody<T>(schema: z.Schema<T>): RequestHandler {
     // retourne une fonction de type RequestHandler qui valide le 
@@ -14,7 +15,7 @@ export function validateBody<T>(schema: z.Schema<T>): RequestHandler {
             next();
         }
         catch (error) {
-            throw error;
+            throw new Error(JSON.parse((error as ZodError).message)[0].message);
         }
     }
 }
