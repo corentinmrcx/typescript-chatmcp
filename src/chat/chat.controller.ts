@@ -1,6 +1,7 @@
 import { Request, Response } from 'express';
 import { ChatModel } from './chat.model';
 import ChatView from './views/chat';
+import { ChatItemView } from './views/chat-item';
 
 class ChatController {
     public chat(req: Request, res: Response): void {
@@ -9,7 +10,11 @@ class ChatController {
     }
 
     public sendPrompt(req: Request, res: Response): void {
-        res.send("Moi : " + req.body.prompt)
+        const prompt = req.body.prompt;
+        const chat = new ChatModel();
+
+        res.send(ChatItemView({ prompt: req.body.prompt }))
+        chat.addPrompt(prompt);
     }
 }
 

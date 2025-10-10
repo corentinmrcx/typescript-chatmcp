@@ -8,8 +8,15 @@ export class ChatModel {
     private _chatId : string;
     static repository : ChatRepository<ModelMessage> = new ChatRepository;
 
-    constructor(){
-        this._chatId = ChatModel.repository.create([]);
+    constructor(chatId?: string){
+        if (chatId) {
+            if (!ChatModel.repository.exists(chatId)) {
+                throw new Error;
+            }
+            this._chatId = chatId;
+        } else {
+            this._chatId = ChatModel.repository.create([]);
+        }
     }
 
     get id(): string {
