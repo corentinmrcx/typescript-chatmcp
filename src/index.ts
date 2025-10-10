@@ -1,6 +1,6 @@
 import express, { NextFunction, Request, Response } from 'express';
 import { HomeView } from './views/home';
-import { ErrorPageView } from './views/error/error-page';
+import { ErrorDialogView } from './views/error/error-dialog';
 import { chatRouter } from './chat/chat.router';
 
 const app = express();
@@ -25,7 +25,7 @@ app.get('/erreur', (req: Request, res: Response) => {
 
 app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
     console.log(`ERREUR : ${err.message}`);
-    const page = ErrorPageView({ title: 'Erreur !'})
+    const page = ErrorDialogView({ title: 'Erreur', errorDetail: err.message })
     res.send(page);
 });
 
