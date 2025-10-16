@@ -19,3 +19,14 @@ export function validateBody<T>(schema: z.Schema<T>): RequestHandler {
         }
     }
 }
+
+export function validateParams<T>(schema: z.Schema<T>): RequestHandler {
+    return (req: Request, res: Response, next: NextFunction) => {
+        try {
+            schema.parse(req.params);
+            next();
+        } catch (error) {
+            throw new Error(JSON.parse((error as ZodError).message)[0].message);
+        }
+    }
+}

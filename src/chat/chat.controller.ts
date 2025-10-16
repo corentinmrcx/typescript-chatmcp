@@ -10,8 +10,9 @@ class ChatController {
     }
 
     public sendPrompt(req: Request, res: Response): void {
+        const { id } = req.params;
         const prompt = req.body.prompt;
-        const chat = new ChatModel();
+        const chat = new ChatModel(id);
 
         res.send(ChatItemView({ prompt: req.body.prompt }))
         chat.addPrompt(prompt);
