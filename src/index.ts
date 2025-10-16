@@ -2,14 +2,15 @@ import express, { NextFunction, Request, Response } from 'express';
 import { HomeView } from './views/home';
 import { ErrorPageView } from './views/error/error-page';
 import { ErrorDialogView } from './views/error/error-dialog';
-import { chatRouter } from './chat/chat.router';
 import { chatController } from './chat/chat.controller';
 
 const app = express();
 const port = process.env.PORT;
 
 app.use(express.static('public'));
-app.use('/chat', chatRouter);
+app.get('/chat/:id?', (req: Request, res: Response) => {
+    chatController.chat(req, res);
+});
 
 app.get('/', (req: Request, res: Response) => {
     const page = HomeView({ title : 'Homeview'})
