@@ -1,4 +1,4 @@
-export function ChatItemView(props: {prompt: string}): JSX.Element{
+export function ChatItemView(props: {prompt: string, id: string}): JSX.Element{
     return(
     <>
         <article class="user_prompt_article">
@@ -9,6 +9,7 @@ export function ChatItemView(props: {prompt: string}): JSX.Element{
             <h2>IA</h2>
             <p>Coucou</p>
         </article>
+        <div hx-get={`/chat/query/${props.id}`} hx-trigger="load"></div>
     </>
     );
 }

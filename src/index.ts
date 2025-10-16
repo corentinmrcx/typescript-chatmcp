@@ -3,6 +3,7 @@ import { HomeView } from './views/home';
 import { ErrorPageView } from './views/error/error-page';
 import { ErrorDialogView } from './views/error/error-dialog';
 import { chatRouter } from './chat/chat.router';
+import { chatController } from './chat/chat.controller';
 
 const app = express();
 const port = process.env.PORT;
@@ -18,6 +19,10 @@ app.get('/', (req: Request, res: Response) => {
 app.get('/time', (req: Request, res: Response) => {
     const date = new Date;
     res.send(date.getHours());
+});
+
+app.get('/chat/query/:id', (req: Request, res: Response) => {
+    chatController.query(req, res);
 });
 
 app.get('/erreur', (req: Request, res: Response) => {

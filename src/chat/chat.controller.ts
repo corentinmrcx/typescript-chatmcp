@@ -11,11 +11,27 @@ class ChatController {
 
     public sendPrompt(req: Request, res: Response): void {
         const { id } = req.params;
+        if (!id) {
+            res.status(400).send('ID is required');
+            return;
+        }
         const prompt = req.body.prompt;
         const chat = new ChatModel(id);
 
-        res.send(ChatItemView({ prompt: req.body.prompt }))
+        res.send(ChatItemView({ prompt: req.body.prompt, id: id }))
         chat.addPrompt(prompt);
+    }
+
+    public query(req: Request, res: Response): void {
+        const { id } = req.params;
+        if (!id) {
+            res.status(400).send('ID is required');
+            return;
+        }
+        const chat = new ChatModel(id);
+        const answer = chat.fetchAnswer();
+
+        res.send(answer);
     }
 }
 
