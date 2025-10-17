@@ -9,7 +9,8 @@ const MODEL_NAME = 'gemini-2.0-flash';
 export class ChatModel {
     private _chatId : string;
     static repository : ChatRepository<ModelMessage> = new ChatRepository;
-    private static _tools : ToolSet | null = null;
+    private static _mcptools : ToolSet | null = null;
+    private static _osmMcpTools : ToolSet | null = null;
 
     constructor(chatId?: string){
         if (chatId) {
@@ -30,20 +31,34 @@ export class ChatModel {
         ChatModel.repository.addMessages(this._chatId, [{ role: 'user', content: prompt }])
     }
 
-    private async createGenerationConfig(toolCallNotification: (toolName: string) => void): Promise<GenerationConfig> {
-        if (ChatModel._tools === null) {
+    private async createGenerationConfig(toolCallNotification: (toolName: string) => void): Promise<GenerationConfig> {        
+        if (!ChatModel._mcptools){
             const mcpClient = await createMCPClient({
                 transport: new StdioClientTransport({
                     command: 'node',
                     args: ['/home/butinfo/mcp-servers/mcp-time/dist/server.js'],
                 }),
-            });
-            ChatModel._tools = await mcpClient.tools();
+            });  
+            ChatModel._mcptools = await mcpClient.tools();
+
         }
+
+        if (!ChatModel._osmMcpTools){
+            const osmMcpClient = await createMCPClient({
+                transport: new StdioClientTransport({
+                    command: '/home/butinfo/bin/uvx',
+                    args: ['osm-mcp-server'],
+                }),
+            });
+            ChatModel._osmMcpTools = await osmMcpClient.tools();
+        }
+
+        const allTools : ToolSet = { ...ChatModel._mcptools, ...ChatModel._osmMcpTools};
+
         return {
             model: google(MODEL_NAME),
             messages: ChatModel.repository.find(this._chatId),
-            tools: ChatModel._tools, 
+            tools: allTools, 
             stopWhen: stepCountIs(10), 
             onStepFinish: (result: StepResult<ToolSet>) => {
                 for (const tool of result.dynamicToolCalls) {

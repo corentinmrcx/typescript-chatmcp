@@ -23,7 +23,7 @@ const ChatView = (id : string) => {
                                 id="send"
                                 hx-post={`/chat/send/${id}`}
                                 hx-target="#chat"
-                                hx-swap="innerHTML">
+                                hx-swap="beforeend">
                             Envoyer
                         </button>
 
