@@ -9,7 +9,7 @@ export function ChatItemView(props: {prompt: string, id: string}): JSX.Element{
             <h2>IA</h2>
             <p>Coucou</p>
         </article>
-        <div hx-get={`/chat/query/${props.id}`} hx-trigger="load" hx-ext="render-markdown" hx-swap="beforeend"></div>
+        <div hx-get={`/chat/query/${props.id}`} hx-trigger="load"></div>
     </>
     );
 }
