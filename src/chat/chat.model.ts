@@ -1,5 +1,5 @@
 import { google } from '@ai-sdk/google';
-import { generateText, ModelMessage, stepCountIs, ToolSet } from 'ai';
+import { generateText, ModelMessage, stepCountIs, StepResult, ToolSet } from 'ai';
 import { ChatRepository } from './chat.repository';
 import { experimental_createMCPClient as createMCPClient } from 'ai';
 import { Experimental_StdioMCPTransport as StdioClientTransport } from 'ai/mcp-stdio';
@@ -30,7 +30,7 @@ export class ChatModel {
         ChatModel.repository.addMessages(this._chatId, [{ role: 'user', content: prompt }])
     }
 
-    private async createGenerationConfig(): Promise<GenerationConfig> {
+    private async createGenerationConfig(toolCallNotification: (toolName: string) => void): Promise<GenerationConfig> {
         if (ChatModel._tools === null) {
             const mcpClient = await createMCPClient({
                 transport: new StdioClientTransport({
@@ -44,12 +44,17 @@ export class ChatModel {
             model: google(MODEL_NAME),
             messages: ChatModel.repository.find(this._chatId),
             tools: ChatModel._tools, 
-            stopWhen: stepCountIs(10)
+            stopWhen: stepCountIs(10), 
+            onStepFinish: (result: StepResult<ToolSet>) => {
+                for (const tool of result.dynamicToolCalls) {
+                    toolCallNotification(tool.toolName);
+                }
+            }
         }
     }
 
-    async fetchAnswer(): Promise<string> {
-        const config = await this.createGenerationConfig();
+    async fetchAnswer(toolCallNotification: (toolName: string) => void): Promise<string> {
+        const config = await this.createGenerationConfig(toolCallNotification);
         const { text, response } = await generateText(config);
         ChatModel.repository.addMessages(this._chatId, response.messages);
         return text;

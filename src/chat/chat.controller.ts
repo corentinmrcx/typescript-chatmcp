@@ -29,10 +29,19 @@ class ChatController {
             return;
         }
         const chat = new ChatModel(id);
-        const answer = await chat.fetchAnswer();
+        const notifications : string[] = [];
+        const toolCallNotification = (toolName: string) => {
+            notifications.push(toolName);
+        }
+        const answer = await chat.fetchAnswer(toolCallNotification);
 
-        console.log(answer);
-        res.send(answer);
+        let responseText = '';
+        if (notifications.length > 0) {
+            responseText += '```' + notifications.join('\n') + '\n```\n\n';
+        }
+        responseText += answer;
+
+        res.send(responseText);
     }
 }
 

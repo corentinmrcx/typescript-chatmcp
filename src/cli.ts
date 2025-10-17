@@ -22,7 +22,16 @@ async function main() {
         }
         else {
             chat.addPrompt(prompt);
-            const answer = await chat.fetchAnswer();
+            const notifications: string[] = [];
+            const toolCallNotification = (toolName: string) => {
+                notifications.push(toolName);
+            };
+            const answer = await chat.fetchAnswer(toolCallNotification);
+            if (notifications.length > 0) {
+                console.log("```");
+                notifications.forEach(name => console.log(name));
+                console.log("```");
+            }
             console.log(COLOR_ANSWER + "Gemini : " + COLOR_DEFAULT, answer);
         }
     }
