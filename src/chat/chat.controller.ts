@@ -22,15 +22,16 @@ class ChatController {
         chat.addPrompt(prompt);
     }
 
-    public query(req: Request, res: Response): void {
+    public async query(req: Request, res: Response): Promise<void> {
         const { id } = req.params;
         if (!id) {
             res.status(400).send('ID is required');
             return;
         }
         const chat = new ChatModel(id);
-        const answer = chat.fetchAnswer();
+        const answer = await chat.fetchAnswer();
 
+        console.log(answer);
         res.send(answer);
     }
 }
