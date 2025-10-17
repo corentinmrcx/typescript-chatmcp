@@ -1,0 +1,14 @@
+[
+    {
+        "name": "mcp-time", 
+        "version": "1.0.0", 
+        "command": "node", 
+        "args": ["/home/butinfo/mcp-servers/mcp-time/dist/server.js"]
+    }, 
+    {
+        "name": "osm-mcp-server", 
+        "version": "1.0.0", 
+        "command": "/home/butinfo/bin/uvx", 
+        "args": ["osm-mcp-server"]
+    }
+]
