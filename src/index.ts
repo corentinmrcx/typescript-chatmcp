@@ -4,12 +4,14 @@ import { ErrorPageView } from './views/error/error-page';
 import { ErrorDialogView } from './views/error/error-dialog';
 import { chatRouter } from './chat/chat.router';
 import { chatController } from './chat/chat.controller';
+import { userRouter } from './user/user.router';
 
 const app = express();
 const port = process.env.PORT;
 
 app.use(express.static('public'));
 app.use('/chat', chatRouter);
+app.use('/user', userRouter)
 
 app.get('/', (req: Request, res: Response) => {
     const page = HomeView({ title : 'Homeview'})
