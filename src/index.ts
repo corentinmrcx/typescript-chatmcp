@@ -5,8 +5,16 @@ import { ErrorDialogView } from './views/error/error-dialog';
 import { chatRouter } from './chat/chat.router';
 import { chatController } from './chat/chat.controller';
 import { userRouter } from './user/user.router';
+import session from 'express-session'; 
 
 const app = express();
+
+app.use(session({
+    secret: 'cc46091749e55f33fe4046b9c8855a13',
+    saveUninitialized: false,
+    resave: false
+}));
+
 const port = process.env.PORT;
 
 app.use(express.static('public'));
@@ -14,7 +22,7 @@ app.use('/chat', chatRouter);
 app.use('/user', userRouter)
 
 app.get('/', (req: Request, res: Response) => {
-    const page = HomeView({ title : 'Homeview'})
+    const page = HomeView({ title : 'Homeview', user: req.session.user })
     res.send(page);
 });
 
