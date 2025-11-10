@@ -1,4 +1,5 @@
 import { User } from "../user/user";
+import { NavBar } from "./navbar";
 
 export function HomeView(props: { title: string, user: User | undefined }):JSX.Element {
     return (<>
@@ -12,6 +13,7 @@ export function HomeView(props: { title: string, user: User | undefined }):JSX.E
             <script type="text/javascript" src="https://iut-info.univ-reims.fr/users/nourrit/chatmcp/js/htmx.js"></script>
         </head>
         <body>
+            <NavBar>Accueil</NavBar>
             <h1>{ props.title }</h1>
             <p>Bienvenu {props.user?.userName}</p>
             <a href="/chat">Chatbot</a>
