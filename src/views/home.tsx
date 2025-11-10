@@ -1,6 +1,6 @@
 import { User } from "../user/user";
 
-export function HomeView(props: { title: string, user: User }):JSX.Element {
+export function HomeView(props: { title: string, user: User | undefined }):JSX.Element {
     return (<>
         {'<!DOCTYPE html>'}
         <html lang="fr">
@@ -13,7 +13,7 @@ export function HomeView(props: { title: string, user: User }):JSX.Element {
         </head>
         <body>
             <h1>{ props.title }</h1>
-            <p>Bienvenu {props.user}</p>
+            <p>Bienvenu {props.user?.userName}</p>
             <a href="/chat">Chatbot</a>
             <button hx-get="/time">Heure</button>
         </body>

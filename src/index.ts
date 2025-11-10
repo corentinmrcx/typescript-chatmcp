@@ -6,19 +6,22 @@ import { chatRouter } from './chat/chat.router';
 import { chatController } from './chat/chat.controller';
 import { userRouter } from './user/user.router';
 import session from 'express-session'; 
+import { connectionRequired } from './user/user.middleware';
+import { valkeyStore } from './services/valkey';
 
 const app = express();
 
 app.use(session({
     secret: 'cc46091749e55f33fe4046b9c8855a13',
     saveUninitialized: false,
-    resave: false
+    resave: false, 
+    store: valkeyStore
 }));
 
 const port = process.env.PORT;
 
 app.use(express.static('public'));
-app.use('/chat', chatRouter);
+app.use('/chat', connectionRequired, chatRouter);
 app.use('/user', userRouter)
 
 app.get('/', (req: Request, res: Response) => {

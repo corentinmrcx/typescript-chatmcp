@@ -11,8 +11,8 @@ const loginFormView = () => {
             </head>
             <body>
                 <form action="/user/login" method="post">
-                    <label for="userName">Nom d'utilisateur</label>
-                    <input type="texte" name="userName" id="username" required />
+                    <label for="username">Nom d'utilisateur</label>
+                    <input type="texte" name="username" id="username" required />
 
                     <label for="password">Mot de passe</label>
                     <input type="password" name="password" id="password" required/> 

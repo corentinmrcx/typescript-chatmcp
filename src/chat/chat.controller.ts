@@ -2,14 +2,17 @@ import { Request, Response } from 'express';
 import { ChatModel } from './chat.model';
 import ChatView from './views/chat';
 import { ChatItemView } from './views/chat-item';
+import { ok } from 'assert';
 
 class ChatController {
     public chat(req: Request, res: Response): void {
+        ok(req.session.user); 
         const chat = new ChatModel;
         res.send(ChatView(chat.id));
     }
 
     public sendPrompt(req: Request, res: Response): void {
+        ok(req.session.user); 
         const { id } = req.params;
         if (!id) {
             res.status(400).send('ID is required');
