@@ -3,6 +3,8 @@ import { userRepository } from './user.repository';
 import ListView from './views/listView'; 
 import loginFormView from './views/loginFormView'
 import bcrypt from 'bcrypt'; 
+import { User } from './user';
+import { ObjectId } from 'bson';
 
 class UserController {
     public async getListUser(req: Request, res: Response): Promise<void> {
@@ -35,6 +37,16 @@ class UserController {
         req.session.destroy(() => {
             res.redirect('/')
         })
+    }
+
+    public getUserFromSession(req: Request, res: Response): User {
+        const user = req.session?.user
+        if (!user) throw new Error('Aucun utilisateur dans la session');
+
+        return {
+            ...user, 
+            _id: new ObjectId(user._id)
+        }
     }
 }
 
