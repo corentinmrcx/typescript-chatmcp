@@ -1,5 +1,6 @@
 import { PropsWithChildren } from "@kitajs/html";
 import { User } from "../user/user";
+import UserDropdown from "../user/views/user.dropdown";
 
 export function NavBar(props: PropsWithChildren<{ user?: User }>): JSX.Element {
     return (
@@ -9,6 +10,9 @@ export function NavBar(props: PropsWithChildren<{ user?: User }>): JSX.Element {
             </ul>
             <ul>
                 {props?.children}
+            </ul>
+            <ul>
+                <UserDropdown user={props.user}/>
             </ul>
         </nav>
     );

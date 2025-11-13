@@ -8,7 +8,7 @@ class ChatController {
     public chat(req: Request, res: Response): void {
         ok(req.session.user); 
         const chat = new ChatModel;
-        res.send(ChatView(chat.id));
+        res.send(ChatView(chat.id, req.session.user));
     }
 
     public sendPrompt(req: Request, res: Response): void {

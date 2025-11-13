@@ -10,10 +10,12 @@ export function HomeView(props: { title: string, user: User | undefined }):JSX.E
             <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"/>
             <title>{ props.title }</title>
             <link rel="stylesheet" href="/css/pico.min.css"></link>
+            <link href="https://iut-info.univ-reims.fr/users/nourrit/chatmcp/css/fontawesome.min.css" rel="stylesheet" type="text/css" />
+            <link href="https://iut-info.univ-reims.fr/users/nourrit/chatmcp/css/solid.min.css" rel="stylesheet" type="text/css" />
             <script type="text/javascript" src="https://iut-info.univ-reims.fr/users/nourrit/chatmcp/js/htmx.js"></script>
         </head>
         <body>
-            <NavBar>Accueil</NavBar>
+            <NavBar user={props.user}>Accueil</NavBar>
             <h1>{ props.title }</h1>
             <p>Bienvenu {props.user?.userName}</p>
             <a href="/chat">Chatbot</a>

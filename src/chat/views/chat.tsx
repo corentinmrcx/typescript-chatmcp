@@ -1,4 +1,6 @@
-const ChatView = (id : string) => {
+import { User } from "../../user/user";
+import { NavBar } from "../../views/navbar";
+const ChatView = (id : string, user: User | undefined) => {
      return (
         <>
             {'<!DOCTYPE html>'}
@@ -10,8 +12,11 @@ const ChatView = (id : string) => {
                 <link rel="stylesheet" href="/css/pico.min.css"></link>
                 <link rel="stylesheet" href="/css/chat.css"></link>
                 <script type="text/javascript" src="https://iut-info.univ-reims.fr/users/nourrit/chatmcp/js/htmx.js"></script>
+                <link href="https://iut-info.univ-reims.fr/users/nourrit/chatmcp/css/fontawesome.min.css" rel="stylesheet" type="text/css" />
+                <link href="https://iut-info.univ-reims.fr/users/nourrit/chatmcp/css/solid.min.css" rel="stylesheet" type="text/css" />
             </head>
             <body>
+                <NavBar user={user}></NavBar>
                 <div className="container">
                     <div id="chat">
                     
