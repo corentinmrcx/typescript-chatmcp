@@ -5,6 +5,8 @@ import loginFormView from './views/loginFormView'
 import bcrypt from 'bcrypt'; 
 import { User } from './user';
 import { ObjectId } from 'bson';
+import ProfilePage from './views/profilePage';
+import { ok } from 'assert';
 
 class UserController {
     public async getListUser(req: Request, res: Response): Promise<void> {
@@ -47,6 +49,12 @@ class UserController {
             ...user, 
             _id: new ObjectId(user._id)
         }
+    }
+
+    public profile(req: Request, res: Response) : void {
+        ok(req.session.user); 
+        const user = req.session.user;
+        res.send(ProfilePage({user}));
     }
 }
 
