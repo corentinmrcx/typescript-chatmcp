@@ -5,7 +5,7 @@ import loginFormView from './views/loginFormView'
 import bcrypt from 'bcrypt'; 
 import { User } from './user';
 import { ObjectId } from 'bson';
-import ProfilePage from './views/profilePage';
+import { ProfilePage, EmailEdit, EmailDisplay } from './views/profilePage';
 import { ok } from 'assert';
 
 class UserController {
@@ -55,6 +55,29 @@ class UserController {
         ok(req.session.user); 
         const user = req.session.user;
         res.send(ProfilePage({user}));
+    }
+
+    public editEmail(req: Request, res: Response): void {
+        ok(req.session.user); 
+        const user = req.session.user; 
+        res.send(EmailEdit({user})); 
+    }
+
+    public displayEmail(req: Request, res: Response): void {
+        ok(req.session.user); 
+        const user = req.session.user; 
+        res.send(EmailDisplay({user})); 
+    }
+
+    public async updateEmail(req: Request, res: Response): Promise<void> {
+        ok(req.session.user); 
+        const user = req.session.user; 
+        const { email } = req.body; 
+        await userRepository.updateUserEmail(user, email); 
+        req.session.regenerate(function(err){
+            req.session.user.email = email;
+            res.redirect("/user/displayEmail")
+        }); 
     }
 }
 
