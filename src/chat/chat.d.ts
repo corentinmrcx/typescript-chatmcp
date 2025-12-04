@@ -1,4 +1,11 @@
-// type extrait du SDK AI (fichier ai/dist/index.d.ts)
+export interface Chat {
+    _id?: string; 
+    userId: string;
+    title: string;
+    creationDate: Date;
+    lastModificationDate: Date;
+    messages: ModelMessage[];
+}
 
 type GenerationConfig = CallSettings & Prompt & {
     /**
