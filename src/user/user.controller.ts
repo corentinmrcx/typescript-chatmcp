@@ -72,12 +72,14 @@ class UserController {
     public async updateEmail(req: Request, res: Response): Promise<void> {
         ok(req.session.user); 
         const user = req.session.user; 
-        const { email } = req.body; 
-        await userRepository.updateUserEmail(user, email); 
-        req.session.regenerate(function(err){
-            req.session.user.email = email;
-            res.redirect("/user/displayEmail")
-        }); 
+        const email  = req.body.email; 
+        const updateDbUser = await userRepository.updateUserEmail(user, email);
+        if (updateDbUser) {
+            req.session.user.email = email; 
+        } else {
+            throw new Error("Erreur lors de l'enregistrement de la nouvelle addresse email"); 
+        }
+        res.send(EmailDisplay({user}))
     }
 }
 

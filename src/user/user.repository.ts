@@ -1,4 +1,4 @@
-import { UpdateResult } from "mongodb";
+import { ObjectId } from "bson";
 import { mongodb } from "../services/mongo";
 import { User } from "./user";
 
@@ -14,12 +14,12 @@ class UserRepository {
         return await this.collection.findOne({ userName });
     }
 
-    async updateUserEmail(user: User, newEmail: string): Promise<UpdateResult<User>> {
+    async updateUserEmail(user: User, newEmail: string): Promise<boolean> {
         const result = await this.collection.updateOne({
-            userName: user.userName}, {
+            _id: new ObjectId(user._id)}, {
                 $set: {email: newEmail}
         }); 
-        return result; 
+        return result.modifiedCount == 1; 
     }
 }
 

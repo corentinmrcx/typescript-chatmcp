@@ -12,11 +12,11 @@ export const EmailDisplay = (props: {user: User }) => {
 
 export const EmailEdit = (props: {user: User}) => {
     return (
-        <form id="emailEdit" action="/user/editEmail" method="get">
+        <form id="emailEdit" hx-post="/user/updateEmail" hx-target="#emailEdit" hx-swap="outerhtml">
             <fieldset role="group">
-                <input name="email" type="email" placeholder={props.user?.email} autocomplete="email" />
+                <input name="email" type="email" value={props.user?.email} autocomplete="email" />
                 <button type="submit">Envoyer</button>
-                <button type="button" class="secondary" hx-get="/user/displayEmail" hx-target="#emailEdit" hx-swap="outerHTML">Annuler</button>
+                <button type="button" hx-get="/user/displayEmail" hx-target="#emailEdit" hx-swap="outerhtml" class="secondary">Annuler</button>
             </fieldset>
         </form>
     );
