@@ -76,10 +76,10 @@ class UserController {
         const updateDbUser = await userRepository.updateUserEmail(user, email);
         if (updateDbUser) {
             req.session.user.email = email; 
+            res.send(EmailDisplay({user}))
         } else {
             throw new Error("Erreur lors de l'enregistrement de la nouvelle addresse email"); 
         }
-        res.send(EmailDisplay({user}))
     }
 }
 
