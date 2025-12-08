@@ -45,13 +45,7 @@ const chatSchema = {
                 }
             }
         }
-    },
-    indexes: [
-        {
-            key: { userId: 1 },
-            name: "index_userId"
-        },
-    ]
+    }
 };
 
 new SchemaManager('chats', chatSchema).executeCommand(process.argv).then(() => process.exit(0));

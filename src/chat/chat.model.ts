@@ -3,6 +3,7 @@ import { generateText, ModelMessage, stepCountIs, StepResult, ToolSet } from 'ai
 import { ChatRepository } from './chat.repository';
 import { experimental_createMCPClient as createMCPClient } from 'ai';
 import { Experimental_StdioMCPTransport as StdioClientTransport } from 'ai/mcp-stdio';
+import { GenerationConfig } from './chat';
 
 const MODEL_NAME = 'gemini-2.0-flash';
 

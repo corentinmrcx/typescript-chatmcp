@@ -1,0 +1,33 @@
+{
+    "_id": {
+        "$oid": "61b8c1f8b0f4d1b6b2f2a2c0"
+    },
+    "userId": "61b8c1f8b0f4d1b6b2f2a2c1",
+    "title": "Projet chatBot",
+    "creationDate": {
+        "$date": "2025-12-04T09:00:00.000Z"
+    },
+    "lastModificationDate": {
+        "$date": "2025-12-04T10:30:00.000Z"
+    },
+    "messages": [
+        {
+            "role": "user",
+            "content": {
+                "text": "Voici mon nouveau projet"
+            }
+        },
+        {
+            "role": "assistant",
+            "content": {
+                "text": "Cool! "
+            }
+        },
+        {
+            "role": "tool",
+            "content": {
+                "result": "Requête exécutée avec succès."
+            }
+        }
+    ]
+}
