@@ -37,10 +37,7 @@ const chatSchema = {
                             enum: ['user', 'assistant', 'tool'],
                             description: "Rôle de la personne qui a écrit le message"
                         },
-                        content: {
-                            bsonType: 'object',
-                            description: "Contenu du message"
-                        }
+                        content: {}
                     }
                 }
             }
