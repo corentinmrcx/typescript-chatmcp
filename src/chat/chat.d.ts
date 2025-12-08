@@ -1,6 +1,8 @@
+import { ObjectId } from "bson";
+
 export interface Chat {
-    _id?: string; 
-    userId: string;
+    _id?: ObjectId; 
+    userId: ObjectId;
     title: string;
     creationDate: Date;
     lastModificationDate: Date;

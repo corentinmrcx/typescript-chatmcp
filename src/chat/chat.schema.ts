@@ -10,7 +10,7 @@ const chatSchema = {
                 description: "Identifiant de la conversation"
             },
             userId: {
-                bsonType: 'string',
+                bsonType: 'objectId',
                 description: "Identifiant de l'utilisateur qui a créé la conversation"
             },
             title: {
