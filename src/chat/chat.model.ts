@@ -1,6 +1,6 @@
 import { google } from '@ai-sdk/google';
-import { generateText, ModelMessage, stepCountIs, StepResult, ToolSet } from 'ai';
-import { ChatRepository } from './chat.repository';
+import { generateText, stepCountIs, StepResult, ToolSet } from 'ai';
+import { chatRepository } from './chat.repository';
 import { experimental_createMCPClient as createMCPClient } from 'ai';
 import { Experimental_StdioMCPTransport as StdioClientTransport } from 'ai/mcp-stdio';
 import { GenerationConfig } from './chat';
@@ -9,27 +9,32 @@ const MODEL_NAME = 'gemini-2.0-flash';
 
 export class ChatModel {
     private _chatId : string;
-    static repository : ChatRepository<ModelMessage> = new ChatRepository;
     private static _mcptools : ToolSet | null = null;
     private static _osmMcpTools : ToolSet | null = null;
 
-    constructor(chatId?: string){
+    static async create(userId: string, chatId?: string): Promise<ChatModel> {
         if (chatId) {
-            if (!ChatModel.repository.exists(chatId)) {
-                throw new Error;
+            const exists = await chatRepository.exists(chatId); 
+            if (!exists) {
+                throw new Error("Le chat n'existe pas");
             }
-            this._chatId = chatId;
-        } else {
-            this._chatId = ChatModel.repository.create([]);
-        }
+            return new ChatModel(chatId);
+        } 
+        
+        const newChatId = await chatRepository.create(userId);
+        return new ChatModel(newChatId); 
+    }
+
+    private constructor(chatId: string) {
+        this._chatId = chatId;
     }
 
     get id(): string {
         return this._chatId;
     }
 
-    addPrompt(prompt: string): void {
-        ChatModel.repository.addMessages(this._chatId, [{ role: 'user', content: prompt }])
+    async addPrompt(prompt: string): Promise<void> {
+        await chatRepository.addMessages(this._chatId, [{ role: 'user', content: prompt }])
     }
 
     private async createGenerationConfig(toolCallNotification: (toolName: string) => void): Promise<GenerationConfig> {        
@@ -58,7 +63,7 @@ export class ChatModel {
 
         return {
             model: google(MODEL_NAME),
-            messages: ChatModel.repository.find(this._chatId),
+            messages: await chatRepository.find(this._chatId),
             tools: allTools, 
             stopWhen: stepCountIs(10), 
             onStepFinish: (result: StepResult<ToolSet>) => {
@@ -72,7 +77,7 @@ export class ChatModel {
     async fetchAnswer(toolCallNotification: (toolName: string) => void): Promise<string> {
         const config = await this.createGenerationConfig(toolCallNotification);
         const { text, response } = await generateText(config);
-        ChatModel.repository.addMessages(this._chatId, response.messages);
+        await chatRepository.addMessages(this._chatId, response.messages);
         return text;
     }
 }

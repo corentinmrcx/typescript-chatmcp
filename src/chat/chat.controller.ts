@@ -5,33 +5,44 @@ import { ChatItemView } from './views/chat-item';
 import { ok } from 'assert';
 
 class ChatController {
-    public chat(req: Request, res: Response): void {
+    public async chat(req: Request, res: Response): Promise<void> {
         ok(req.session.user); 
-        const chat = new ChatModel;
+        const userId = req.session.user?._id?.toString(); 
+        if (!userId) throw new Error("L'ID de l'utilsateur est introuvable")
+            
+        const chat = await ChatModel.create(userId);
         res.send(ChatView(chat.id, req.session.user));
     }
 
-    public sendPrompt(req: Request, res: Response): void {
+    public async sendPrompt(req: Request, res: Response): Promise<void> {
         ok(req.session.user); 
-        const { id } = req.params;
-        if (!id) {
+        const { chatId } = req.params;
+        if (!chatId) {
             res.status(400).send('ID is required');
             return;
         }
         const prompt = req.body.prompt;
-        const chat = new ChatModel(id);
 
-        res.send(ChatItemView({ prompt: req.body.prompt, id: id }))
+        const userId = req.session.user?._id?.toString(); 
+        if (!userId) throw new Error("L'ID de l'utilsateur est introuvable")
+            
+        const chat = await ChatModel.create(userId, chatId);
+        res.send(ChatItemView({ prompt: req.body.prompt, id: chatId }))
         chat.addPrompt(prompt);
     }
 
     public async query(req: Request, res: Response): Promise<void> {
-        const { id } = req.params;
-        if (!id) {
+        const { chatId } = req.params;
+        if (!chatId) {
             res.status(400).send('ID is required');
             return;
         }
-        const chat = new ChatModel(id);
+
+        const userId = req.session.user?._id?.toString(); 
+        if (!userId) throw new Error("L'ID de l'utilsateur est introuvable")
+
+        const chat = await ChatModel.create(userId, chatId);
+
         const notifications : string[] = [];
         const toolCallNotification = (toolName: string) => {
             notifications.push(toolName);
