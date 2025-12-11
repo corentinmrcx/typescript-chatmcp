@@ -1,6 +1,6 @@
 import { User } from "../../user/user";
 import { NavBar } from "../../views/navbar";
-const ChatView = (id : string, user: User | undefined) => {
+const ChatView = (id : string, user: User | undefined, title: string) => {
      return (
         <>
             {'<!DOCTYPE html>'}
@@ -16,7 +16,7 @@ const ChatView = (id : string, user: User | undefined) => {
                 <link href="https://iut-info.univ-reims.fr/users/nourrit/chatmcp/css/solid.min.css" rel="stylesheet" type="text/css" />
             </head>
             <body>
-                <NavBar user={user}></NavBar>
+                <NavBar user={user} chatTitle={title} chatId={id}></NavBar>
                 <div className="container">
                     <div id="chat">
                     

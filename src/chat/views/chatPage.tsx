@@ -1,7 +1,7 @@
 import { User } from "../../user/user";
 import { NavBar } from "../../views/navbar";
 
-export function ChatPage(props: { id: string, user: User | undefined }): JSX.Element {
+export function ChatPage(props: { id: string, user: User | undefined, title: string }): JSX.Element {
     return (
         <>
             {'<!DOCTYPE html>'}
@@ -17,7 +17,7 @@ export function ChatPage(props: { id: string, user: User | undefined }): JSX.Ele
                 <link href="https://iut-info.univ-reims.fr/users/nourrit/chatmcp/css/solid.min.css" rel="stylesheet" type="text/css" />
             </head>
             <body>
-                <NavBar user={props.user}></NavBar>
+                <NavBar user={props.user} chatTitle={props.title} chatId={props.id}></NavBar>
                 <div className="container">
                     <div id="chat">
                     

@@ -70,6 +70,14 @@ class ChatRepository {
         const chat = await cursor.next();
         return chat ?? null;
     }
+
+    async updateTitle(chatId: string, newTitle: string): Promise<boolean> {
+        const result = await this.collection.updateOne(
+            { _id: new ObjectId(chatId) },
+            { $set: { title: newTitle, lastModificationDate: new Date() } }
+        );
+        return result.modifiedCount === 1;
+    }
 }
 
 export const chatRepository = new ChatRepository();

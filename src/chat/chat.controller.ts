@@ -5,6 +5,7 @@ import { ChatItemView } from './views/chat-item';
 import { ok } from 'assert';
 import { ChatPage } from './views/chatPage';
 import { chatRepository } from './chat.repository';
+import { ChatTitleDisplay, ChatTitleEdit } from './views/chat-title';
 
 class ChatController {
     public async chat(req: Request, res: Response): Promise<void> {
@@ -34,7 +35,7 @@ class ChatController {
         const idChat = chatModel.id;
         const chat = await chatRepository.find(idChat);
 
-        res.send(ChatView(idChat, user));
+        res.send(ChatView(idChat, user, chat?.title || "Nouvelle conversation"));
     }
 
     public async sendPrompt(req: Request, res: Response): Promise<void> {
@@ -88,8 +89,53 @@ class ChatController {
         const userId = user?._id?.toString();     
         if (!userId) throw new Error("L'ID de l'utilsateur est introuvable")   
 
-        const chatModel = await ChatModel.create(userId); 
-        res.send(ChatPage({ id: chatModel.id, user: user })); 
+        const chatModel = await ChatModel.create(userId);
+        const chat = await chatRepository.find(chatModel.id);
+        res.send(ChatPage({ id: chatModel.id, user: user, title: chat?.title || "Nouvelle conversation" })); 
+    }
+
+    public async editTitle(req: Request, res: Response): Promise<void> {
+        const chatId = req.params.id;
+        if (!chatId) {
+            res.status(400).send('ID is required');
+            return;
+        }
+
+        const chat = await chatRepository.find(chatId);
+        res.send(ChatTitleEdit({ title: chat.title, _id: chatId }));
+    }
+
+    public async displayTitle(req: Request, res: Response): Promise<void> {
+        const chatId = req.params.id;
+        if (!chatId) {
+            res.status(400).send('ID is required');
+            return;
+        }
+
+        const chat = await chatRepository.find(chatId);
+        res.send(ChatTitleDisplay({ title: chat.title, _id: chatId }));
+    }
+
+    public async updateTitle(req: Request, res: Response): Promise<void> {
+        const chatId = req.params.id;
+        if (!chatId) {
+            res.status(400).send('ID is required');
+            return;
+        }
+
+        const newTitle = req.body.title;
+        if (!newTitle || newTitle.trim().length === 0) {
+            res.status(400).send('Title is required');
+            return;
+        }
+
+        const updated = await chatRepository.updateTitle(chatId, newTitle);
+        if (updated) {
+            const chat = await chatRepository.find(chatId);
+            res.send(ChatTitleDisplay({ title: chat.title, _id: chatId }));
+        } else {
+            throw new Error("Erreur lors de l'enregistrement du nouveau titre");
+        }
     }
 }
 
