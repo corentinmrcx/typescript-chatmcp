@@ -16,23 +16,23 @@ class ChatController {
 
     public async sendPrompt(req: Request, res: Response): Promise<void> {
         ok(req.session.user); 
-        const { chatId } = req.params;
-        if (!chatId) {
+        const userId = req.session.user?._id?.toString();
+        if (!userId) throw new Error("L'ID de l'utilsateur est introuvable")
+ 
+        const chat = await ChatModel.create(userId, req.params.id);
+        if (!req.params.id) {
             res.status(400).send('ID is required');
             return;
         }
-        const prompt = req.body.prompt;
 
-        const userId = req.session.user?._id?.toString(); 
-        if (!userId) throw new Error("L'ID de l'utilsateur est introuvable")
+        const prompt = req.body.prompt;
             
-        const chat = await ChatModel.create(userId, chatId);
-        res.send(ChatItemView({ prompt: req.body.prompt, id: chatId }))
+        res.send(ChatItemView({ prompt: req.body.prompt, id: chat.id }))
         chat.addPrompt(prompt);
     }
 
     public async query(req: Request, res: Response): Promise<void> {
-        const { chatId } = req.params;
+        const chatId = req.params.id;
         if (!chatId) {
             res.status(400).send('ID is required');
             return;

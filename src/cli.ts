@@ -11,7 +11,8 @@ const readLine = createInterface({
 });
 
 async function main() {
-    const chat = new ChatModel();
+    const chatId = process.argv[2]; 
+    const chat = await ChatModel.create("", chatId);
     let stop : boolean = false;
     while (stop == false) {
         const prompt : string = await readLine.question(COLOR_USER + "Corentin : " + COLOR_DEFAULT)
