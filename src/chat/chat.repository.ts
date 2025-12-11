@@ -2,6 +2,7 @@ import { ModelMessage } from 'ai';
 import { ObjectId } from 'bson';
 import { mongodb } from '../services/mongo';
 import { Chat } from './chat';
+import { valkey } from '../services/valkey';
 
 class ChatRepository {
     private readonly collection = mongodb.collection<Chat>('chats');
@@ -23,6 +24,9 @@ class ChatRepository {
             messages: []
         });
         
+        const chat = await this.find(chatId.toHexString());
+        await this.writeToCache(chat);
+        
         return chatId.toHexString();
     }
 
@@ -34,6 +38,9 @@ class ChatRepository {
     }
 
     async find(chatId: string): Promise<Chat> {
+        const cachedChat = await this.readFromCache(chatId);
+        if (cachedChat) return cachedChat;
+        
         const chat = await this.collection.findOne({
             _id: new ObjectId(chatId)
         });
@@ -41,6 +48,7 @@ class ChatRepository {
         if (!chat) {
             throw new Error(`Le CHat ${chatId} n'est pas trouver`);
         }
+        await this.writeToCache(chat);
         
         return chat;
     }
@@ -59,6 +67,9 @@ class ChatRepository {
         if (result.matchedCount === 0) {
             throw new Error(`Le CHat ${chatId} n'est pas trouver`);
         }
+        
+        const chat = await this.find(chatId);
+        await this.writeToCache(chat);
     }
     
     async findLastByUser(userId: string): Promise<Chat | null> {
@@ -68,7 +79,16 @@ class ChatRepository {
             .limit(1);
 
         const chat = await cursor.next();
-        return chat ?? null;
+        if (!chat) return null;
+        
+        const chatId = chat._id?.toHexString();
+        if (chatId) {
+            const cachedChat = await this.readFromCache(chatId);
+            if (cachedChat) return cachedChat;
+            await this.writeToCache(chat);
+        }
+        
+        return chat;
     }
 
     async updateTitle(chatId: string, newTitle: string): Promise<boolean> {
@@ -76,7 +96,40 @@ class ChatRepository {
             { _id: new ObjectId(chatId) },
             { $set: { title: newTitle, lastModificationDate: new Date() } }
         );
+        
+        if (result.modifiedCount === 1) {
+            const chat = await this.find(chatId);
+            await this.writeToCache(chat);
+        }
+        
         return result.modifiedCount === 1;
+    }
+
+    async writeToCache (chat: Chat): Promise<void> {
+        const chatId = chat._id?.toHexString();
+        if (!chatId) throw new Error("L'ID est introuvable");
+    
+        console.log(`Écriture dans le cache pour le chatId : ${chatId}`);
+        await valkey.set(`chat:${chatId}`, JSON.stringify(chat));
+    }
+
+    async readFromCache (chatId: string): Promise<Chat | undefined> {
+        if (await valkey.exists(`chat:${chatId}`)) {
+            console.log(`Utilisation des données mises en cache pour le chatId : ${chatId}`);
+            const data = await valkey.get(`chat:${chatId}`);
+            if (!data) return undefined;
+            
+            return JSON.parse(data, (key, value) => {
+                if (key === 'creationDate' || key === 'lastModificationDate') {
+                    return new Date(value);
+                }
+                if (key === '_id' || key === 'userId') {
+                    return new ObjectId(value);
+                }
+                return value;
+            });
+        }
+        return undefined; 
     }
 }
 
