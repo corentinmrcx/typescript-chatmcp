@@ -3,15 +3,38 @@ import { ChatModel } from './chat.model';
 import ChatView from './views/chat';
 import { ChatItemView } from './views/chat-item';
 import { ok } from 'assert';
+import { ChatPage } from './views/chatPage';
+import { chatRepository } from './chat.repository';
 
 class ChatController {
     public async chat(req: Request, res: Response): Promise<void> {
-        ok(req.session.user); 
-        const userId = req.session.user?._id?.toString(); 
-        if (!userId) throw new Error("L'ID de l'utilsateur est introuvable")
-            
-        const chat = await ChatModel.create(userId);
-        res.send(ChatView(chat.id, req.session.user));
+        if (!req.session.user || !req.session.user._id) {
+            throw new Error("Utilisateur introuvable");
+        }
+
+        const user = req.session.user;
+        const userId = user._id?.toString();
+        if (!userId) throw new Error("L'id de l'utilisateur est introuvable")
+        const chatId = req.params.id;
+
+        let chatModel; 
+        if (chatId) {
+            chatModel = await ChatModel.create(userId, chatId);
+        } else {
+            const lastChat = await chatRepository.findLastByUser(userId);
+
+            if (lastChat && lastChat._id) {
+                const lastChatId = lastChat._id.toHexString();
+                chatModel = await ChatModel.create(userId, lastChatId);
+            } else {
+                chatModel = await ChatModel.create(userId);
+            }
+        }
+
+        const idChat = chatModel.id;
+        const chat = await chatRepository.find(idChat);
+
+        res.send(ChatView(idChat, user));
     }
 
     public async sendPrompt(req: Request, res: Response): Promise<void> {
@@ -56,6 +79,17 @@ class ChatController {
         responseText += answer;
 
         res.send(responseText);
+    }
+
+    public async newChat(req: Request, res: Response): Promise<void> {
+        const user = req.session.user;  
+        if (!user) throw new Error("L'utilsateur est introuvable")  
+
+        const userId = user?._id?.toString();     
+        if (!userId) throw new Error("L'ID de l'utilsateur est introuvable")   
+
+        const chatModel = await ChatModel.create(userId); 
+        res.send(ChatPage({ id: chatModel.id, user: user })); 
     }
 }
 

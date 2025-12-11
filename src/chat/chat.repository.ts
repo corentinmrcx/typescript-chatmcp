@@ -33,7 +33,7 @@ class ChatRepository {
         return count > 0;
     }
 
-        async find(chatId: string): Promise<Chat> {
+    async find(chatId: string): Promise<Chat> {
         const chat = await this.collection.findOne({
             _id: new ObjectId(chatId)
         });
@@ -59,6 +59,16 @@ class ChatRepository {
         if (result.matchedCount === 0) {
             throw new Error(`Le CHat ${chatId} n'est pas trouver`);
         }
+    }
+    
+    async findLastByUser(userId: string): Promise<Chat | null> {
+        const cursor = this.collection
+            .find({ userId: new ObjectId(userId) })
+            .sort({ lastModificationDate: -1, creationDate: -1 })
+            .limit(1);
+
+        const chat = await cursor.next();
+        return chat ?? null;
     }
 }
 

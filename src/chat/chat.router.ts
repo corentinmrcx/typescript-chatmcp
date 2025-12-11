@@ -15,6 +15,9 @@ const idSchema = z.object({
 });
 
 chatRouter.get('/', connectionRequired, chatController.chat);
+chatRouter.get('/:id', connectionRequired, chatController.chat)
+chatRouter.get('/new', connectionRequired, chatController.newChat)
+
 chatRouter.post('/send/:id', 
     connectionRequired,
     validateParams(idSchema),
