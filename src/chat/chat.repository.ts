@@ -56,20 +56,17 @@ class ChatRepository {
     async addMessages(chatId: string, messages: ModelMessage[]): Promise<void> {
         if (messages.length == 0) return;
         
-        const result = await this.collection.updateOne(
+        const result = await this.collection.findOneAndUpdate(
             { _id: new ObjectId(chatId) },
             {
                 $set: { lastModificationDate: new Date() },
                 $push: { messages: { $each: messages } }
-            }
+            }, 
+            { returnDocument: 'after' }
         );
         
-        if (result.matchedCount === 0) {
-            throw new Error(`Le CHat ${chatId} n'est pas trouver`);
-        }
-        
-        const chat = await this.find(chatId);
-        await this.writeToCache(chat);
+        if (!result) throw new Error(`Le CHat ${chatId} n'est pas trouver`);
+        await this.writeToCache(result);
     }
     
     async findLastByUser(userId: string): Promise<Chat | null> {
@@ -92,17 +89,14 @@ class ChatRepository {
     }
 
     async updateTitle(chatId: string, newTitle: string): Promise<boolean> {
-        const result = await this.collection.updateOne(
+        const result = await this.collection.findOneAndUpdate(
             { _id: new ObjectId(chatId) },
-            { $set: { title: newTitle, lastModificationDate: new Date() } }
+            { $set: { title: newTitle, lastModificationDate: new Date() } },
+            { returnDocument: 'after' }
         );
-        
-        if (result.modifiedCount === 1) {
-            const chat = await this.find(chatId);
-            await this.writeToCache(chat);
-        }
-        
-        return result.modifiedCount === 1;
+        if (!result) return false
+        await this.writeToCache(result);
+        return true;
     }
 
     async writeToCache (chat: Chat): Promise<void> {
