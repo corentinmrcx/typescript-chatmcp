@@ -21,10 +21,9 @@ const idSchema = z.object({
 
 chatRouter.get('/', connectionRequired, chatController.chat);
 chatRouter.get('/new', connectionRequired, chatController.newChat)
-chatRouter.get('/:id', connectionRequired, validateParams(idSchema), isChatOwner, chatController.chat)
-
 chatRouter.get('/editTitle/:id', connectionRequired, validateParams(idSchema), isChatOwner, chatController.editTitle);
 chatRouter.get('/displayTitle/:id', connectionRequired, validateParams(idSchema), isChatOwner, chatController.displayTitle);
+chatRouter.get('/list', chatController.list); 
 
 chatRouter.post('/send/:id', 
     connectionRequired,
@@ -43,3 +42,5 @@ chatRouter.post('/updateTitle/:id',
     validateBody(updateTitleSchema),
     chatController.updateTitle
 );
+
+chatRouter.get('/:id', connectionRequired, validateParams(idSchema), isChatOwner, chatController.chat)

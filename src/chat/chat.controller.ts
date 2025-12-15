@@ -137,6 +137,17 @@ class ChatController {
             throw new Error("Erreur lors de l'enregistrement du nouveau titre");
         }
     }
+    
+    public async list(req: Request, res: Response): Promise<void> {
+        const user = req.session.user;  
+        if (!user) throw new Error("L'utilsateur est introuvable")  
+
+        const userId = user?._id?.toString();     
+        if (!userId) throw new Error("L'ID de l'utilsateur est introuvable") 
+        
+        const result = await chatRepository.aggregateByUserId(userId)
+        console.log(result);
+    }
 }
 
 export const chatController = new ChatController();

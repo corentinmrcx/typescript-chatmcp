@@ -1,7 +1,7 @@
 import { ModelMessage } from 'ai';
 import { ObjectId } from 'bson';
 import { mongodb } from '../services/mongo';
-import { Chat } from './chat';
+import { Chat, ChatInfo } from './chat';
 import { valkey } from '../services/valkey';
 
 class ChatRepository {
@@ -124,6 +124,15 @@ class ChatRepository {
             });
         }
         return undefined; 
+    }
+    
+    async aggregateByUserId(userId: string): Promise<ChatInfo[]> {
+        const result = await this.collection.aggregate<ChatInfo>([
+            { $match: { userId: new ObjectId(userId) }}, 
+            { $project: { _id: 1, userId: 1, title: 1, creationDate: 1, lastModificationDate: 1, messageCount: { $size: "$messages" } }},
+            { $sort: { lastModificationDate: -1 }}
+        ]).toArray(); 
+        return result; 
     }
 }
 

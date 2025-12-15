@@ -1,11 +1,15 @@
 import { ObjectId } from "bson";
 
-export interface Chat {
+export interface ChatInfo {
     _id?: ObjectId; 
     userId: ObjectId;
     title: string;
     creationDate: Date;
     lastModificationDate: Date;
+    messageCount?: number
+}
+
+export interface Chat extends ChatInfo{
     messages: ModelMessage[];
 }
 
