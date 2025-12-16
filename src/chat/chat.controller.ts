@@ -6,7 +6,7 @@ import { ok } from 'assert';
 import { ChatPage } from './views/chatPage';
 import { chatRepository } from './chat.repository';
 import { ChatTitleDisplay, ChatTitleEdit } from './views/chat-title';
-import { ChatListPage } from './views/chat-list-page';
+import { ChatListPage, ChatList } from './views/chat-list-page';
 
 class ChatController {
     public async chat(req: Request, res: Response): Promise<void> {
@@ -146,8 +146,22 @@ class ChatController {
         const userId = user?._id?.toString();     
         if (!userId) throw new Error("L'ID de l'utilsateur est introuvable") 
         
-        const result = await chatRepository.aggregateByUserId(userId)
-        res.send(ChatListPage({ user: user, chatInfos: result }));
+        const pageParam = req.query.page;
+        let page = 1;
+        if (pageParam) {
+            const parsedPage = parseInt(pageParam as string, 10);
+            if (parsedPage && parsedPage >= 1) page = parsedPage;
+        }
+        
+        const pageSize = 5;
+        const result = await chatRepository.aggregateByUserId(userId, pageSize, page);
+        
+        const isHtmxRequest = req.headers['hx-request'];
+        if (isHtmxRequest) {
+            res.send(ChatList({ chats: result.chatInfos, page, count: result.count, pageSize }));
+        } else {
+            res.send(ChatListPage({ user: user, chatInfos: result.chatInfos, page, count: result.count, pageSize }));
+        }
     }
 }
 

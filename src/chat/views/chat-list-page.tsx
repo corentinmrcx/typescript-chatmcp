@@ -37,17 +37,28 @@ function ChatListItem({ chat }: { chat: ChatInfo }): JSX.Element {
     );
 }
 
-function ChatList({ chats }: { chats: ChatInfo[] }): JSX.Element {
+export function ChatList({ chats, page, count, pageSize }: { chats: ChatInfo[], page: number, count: number, pageSize: number }): JSX.Element {
+    const hasMorePages = count > page * pageSize;
+    
     return (
         <div>
             {chats.map((chat) => (
                 <ChatListItem chat={chat} />
             ))}
+            {hasMorePages && (
+                <a 
+                    href="#" 
+                    hx-get={`/chat/list?page=${page + 1}`} 
+                    hx-swap="outerHTML"
+                >
+                    Cliquez pour afficher les conversations suivantes
+                </a>
+            )}
         </div>
     );
 }
 
-export function ChatListPage({ user, chatInfos }: { user: User, chatInfos: ChatInfo[] }): JSX.Element {
+export function ChatListPage({ user, chatInfos, page, count, pageSize }: { user: User, chatInfos: ChatInfo[], page: number, count: number, pageSize: number }): JSX.Element {
     return (
         <>
             {'<!DOCTYPE html>'}
@@ -64,10 +75,10 @@ export function ChatListPage({ user, chatInfos }: { user: User, chatInfos: ChatI
             </head>
             <body>
                 <NavBar user={user}>
-                    <ChatCount count={chatInfos.length} />
+                    <ChatCount count={count} />
                 </NavBar>
                 <main class="container">
-                    <ChatList chats={chatInfos} />
+                    <ChatList chats={chatInfos} page={page} count={count} pageSize={pageSize} />
                 </main>
             </body>
             </html>
