@@ -6,6 +6,7 @@ import { ok } from 'assert';
 import { ChatPage } from './views/chatPage';
 import { chatRepository } from './chat.repository';
 import { ChatTitleDisplay, ChatTitleEdit } from './views/chat-title';
+import { ChatListPage } from './views/chat-list-page';
 
 class ChatController {
     public async chat(req: Request, res: Response): Promise<void> {
@@ -146,7 +147,7 @@ class ChatController {
         if (!userId) throw new Error("L'ID de l'utilsateur est introuvable") 
         
         const result = await chatRepository.aggregateByUserId(userId)
-        console.log(result);
+        res.send(ChatListPage({ user: user, chatInfos: result }));
     }
 }
 

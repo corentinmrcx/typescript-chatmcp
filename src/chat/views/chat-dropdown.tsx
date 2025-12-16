@@ -15,6 +15,9 @@ export function ChatDropdown(props: { user?: User }): JSX.Element | null {
                 <li>
                     <a href="/chat/new">Nouvelle conversations</a>
                 </li>
+                <li>
+                    <a href="/chat/list">Voir toutes les conversations</a>
+                </li>
             </ul>
         </details>
     ); 

@@ -23,7 +23,7 @@ chatRouter.get('/', connectionRequired, chatController.chat);
 chatRouter.get('/new', connectionRequired, chatController.newChat)
 chatRouter.get('/editTitle/:id', connectionRequired, validateParams(idSchema), isChatOwner, chatController.editTitle);
 chatRouter.get('/displayTitle/:id', connectionRequired, validateParams(idSchema), isChatOwner, chatController.displayTitle);
-chatRouter.get('/list', chatController.list); 
+chatRouter.get('/list', connectionRequired, chatController.list); 
 
 chatRouter.post('/send/:id', 
     connectionRequired,
