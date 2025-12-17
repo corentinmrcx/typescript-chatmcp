@@ -3,11 +3,32 @@ import { ChatInfo } from "../chat";
 import { NavBar } from "../../views/navbar";
 import { ChatTitleDisplay } from "./chat-title";
 
-function ChatCount({ count }: { count: number }): JSX.Element {
+export function ChatCount({ count }: { count: number }): JSX.Element {
     return (
-        <li>
-            <strong>{count} conversations</strong>
-        </li>
+        <div id="chat-count" hx-swap-oob="true">
+            <li>
+                <span><strong>{count} conversations</strong></span>
+                &nbsp;
+                <button hx-get="/chat/searchForm" hx-target="#chat-count" hx-swap="outerHTML">
+                    <i class="fa-solid fa-search"></i>
+                </button>
+            </li>
+        </div>
+    );
+}
+
+export function ChatSearchForm(): JSX.Element {
+    return (
+        <div id="chat-count">
+            <li style={{"listStyle": "none"}}>
+                <form hx-get="/chat/list" hx-target="main" hx-swap="innerHTML" style="display: inline-flex; align-items: center; gap: 0.5rem;">
+                    <input name="searchText" type="text" placeholder="Rechercher" style="margin: 0; width: 200px;" />
+                    <button type="submit" style="margin: 0; padding: 0.25rem 0.5rem;">
+                        <i class="fa-solid fa-check"></i>
+                    </button>
+                </form>
+            </li>
+        </div>
     );
 }
 
@@ -37,8 +58,9 @@ function ChatListItem({ chat }: { chat: ChatInfo }): JSX.Element {
     );
 }
 
-export function ChatList({ chats, page, count, pageSize }: { chats: ChatInfo[], page: number, count: number, pageSize: number }): JSX.Element {
+export function ChatList({ chats, page, count, pageSize, searchText }: { chats: ChatInfo[], page: number, count: number, pageSize: number, searchText?: string }): JSX.Element {
     const hasMorePages = count > page * pageSize;
+    const searchParam = searchText ? `&searchText=${encodeURIComponent(searchText)}` : '';
     
     return (
         <div>
@@ -48,7 +70,7 @@ export function ChatList({ chats, page, count, pageSize }: { chats: ChatInfo[], 
             {hasMorePages && (
                 <a 
                     href="#" 
-                    hx-get={`/chat/list?page=${page + 1}`} 
+                    hx-get={`/chat/list?page=${page + 1}${searchParam}`} 
                     hx-swap="outerHTML"
                 >
                     Cliquez pour afficher les conversations suivantes
@@ -58,7 +80,7 @@ export function ChatList({ chats, page, count, pageSize }: { chats: ChatInfo[], 
     );
 }
 
-export function ChatListPage({ user, chatInfos, page, count, pageSize }: { user: User, chatInfos: ChatInfo[], page: number, count: number, pageSize: number }): JSX.Element {
+export function ChatListPage({ user, chatInfos, page, count, pageSize, searchText }: { user: User, chatInfos: ChatInfo[], page: number, count: number, pageSize: number, searchText?: string }): JSX.Element {
     return (
         <>
             {'<!DOCTYPE html>'}
@@ -78,7 +100,7 @@ export function ChatListPage({ user, chatInfos, page, count, pageSize }: { user:
                     <ChatCount count={count} />
                 </NavBar>
                 <main class="container">
-                    <ChatList chats={chatInfos} page={page} count={count} pageSize={pageSize} />
+                    <ChatList chats={chatInfos} page={page} count={count} pageSize={pageSize} searchText={searchText} />
                 </main>
             </body>
             </html>

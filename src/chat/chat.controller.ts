@@ -6,7 +6,7 @@ import { ok } from 'assert';
 import { ChatPage } from './views/chatPage';
 import { chatRepository } from './chat.repository';
 import { ChatTitleDisplay, ChatTitleEdit } from './views/chat-title';
-import { ChatListPage, ChatList } from './views/chat-list-page';
+import { ChatListPage, ChatList, ChatCount, ChatSearchForm } from './views/chat-list-page';
 
 class ChatController {
     public async chat(req: Request, res: Response): Promise<void> {
@@ -153,15 +153,22 @@ class ChatController {
             if (parsedPage && parsedPage >= 1) page = parsedPage;
         }
         
+        const searchText = req.query.searchText as string | undefined;
         const pageSize = 5;
-        const result = await chatRepository.aggregateByUserId(userId, pageSize, page);
+        const result = await chatRepository.aggregateByUserId(userId, pageSize, page, searchText);
         
         const isHtmxRequest = req.headers['hx-request'];
         if (isHtmxRequest) {
-            res.send(ChatList({ chats: result.chatInfos, page, count: result.count, pageSize }));
+            const chatList = ChatList({ chats: result.chatInfos, page, count: result.count, pageSize, searchText });
+            const chatCount = ChatCount({ count: result.count });
+            res.send(`${chatList}${chatCount}`);
         } else {
-            res.send(ChatListPage({ user: user, chatInfos: result.chatInfos, page, count: result.count, pageSize }));
+            res.send(ChatListPage({ user: user, chatInfos: result.chatInfos, page, count: result.count, pageSize, searchText }));
         }
+    }
+
+    public async searchForm(req: Request, res: Response): Promise<void> {
+        res.send(ChatSearchForm());
     }
 }
 
