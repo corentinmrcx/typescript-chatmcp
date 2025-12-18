@@ -9,15 +9,20 @@ import session from 'express-session';
 import { connectionRequired } from './user/user.middleware';
 import { valkeyStore } from './services/valkey';
 import { discussRouter } from './discuss/discuss.router';
+import { createServer } from 'http';
+import { DiscussServer } from './discuss/discuss.server';
 
 const app = express();
+const httpServer = createServer(app); 
 
-app.use(session({
+const sessionMiddleware = session({
     secret: 'cc46091749e55f33fe4046b9c8855a13',
     saveUninitialized: false,
     resave: false, 
     store: valkeyStore
-}));
+}); 
+app.use(sessionMiddleware);
+DiscussServer.create(httpServer, sessionMiddleware); 
 
 const port = process.env.PORT;
 
@@ -55,6 +60,6 @@ app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
     }
 });
 
-app.listen(port, () => {
+httpServer.listen(port, () => {
     console.log(`Serveur local démarré : http://localhost:${port}`);
 });

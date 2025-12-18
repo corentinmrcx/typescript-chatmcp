@@ -36,7 +36,8 @@ const DiscussPage = (user: User) => {
                             </button>
                         </form>
                     </div>
-                    <script src="https://iut-info.univ-reims.fr/users/nourrit/chatmcp/js/socket.io.min.js et /js/discuss.js"></script>
+                    <script src="https://iut-info.univ-reims.fr/users/nourrit/chatmcp/js/socket.io.min.js"></script>
+                    <script src="/js/discuss.js"></script>
                 </body>
             </html>
         </>
