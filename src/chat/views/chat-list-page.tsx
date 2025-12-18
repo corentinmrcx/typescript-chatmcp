@@ -32,7 +32,7 @@ export function ChatSearchForm(): JSX.Element {
     );
 }
 
-function ChatListItem({ chat }: { chat: ChatInfo }): JSX.Element {
+function ChatListItem({ chat, count }: { chat: ChatInfo, count: number }): JSX.Element {
     const { _id, title, creationDate, lastModificationDate, messageCount } = chat;
     if (!_id)  throw new Error("L'ID du chat est introuvable");
 
@@ -50,9 +50,14 @@ function ChatListItem({ chat }: { chat: ChatInfo }): JSX.Element {
             </p>
             <footer style={{display: "flex", justifyContent: "space-between", alignItems: "center"}}>
                 <span>{messageCount} messages</span>
-                <a href="">
-                    <button><i class="fa-solid fa-trash"></i></button>
-                </a>
+                <button 
+                    hx-delete={`/chat/delete/${_id}?newCount=${count}`}
+                    hx-target="closest article"
+                    hx-swap="outerHTML"
+                    hx-confirm="Êtes-vous sûr de vouloir supprimer cette conversation ?"
+                >
+                    <i class="fa-solid fa-trash"></i>
+                </button>
             </footer>
         </article>
     );
@@ -65,7 +70,7 @@ export function ChatList({ chats, page, count, pageSize, searchText }: { chats: 
     return (
         <div>
             {chats.map((chat) => (
-                <ChatListItem chat={chat} />
+                <ChatListItem chat={chat} count={count} />
             ))}
             {hasMorePages && (
                 <a 

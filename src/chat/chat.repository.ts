@@ -152,6 +152,18 @@ class ChatRepository {
         
         return { count, chatInfos }; 
     }
+
+    async deleteFromCache(chatId: string): Promise<void> {
+        await valkey.del(`chat:${chatId}`);
+    }
+
+    async delete(chatId: string): Promise<boolean> {
+        const result = await this.collection.deleteOne({ _id: new ObjectId(chatId) });
+        if (!result) throw new Error('La conversation n\'est pas trouvée');
+        if (result.deletedCount === 0) return false;
+        await this.deleteFromCache(chatId);
+        return true;
+    }
 }
 
 export const chatRepository = new ChatRepository();

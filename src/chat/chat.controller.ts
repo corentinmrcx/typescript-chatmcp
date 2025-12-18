@@ -170,6 +170,22 @@ class ChatController {
     public async searchForm(req: Request, res: Response): Promise<void> {
         res.send(ChatSearchForm());
     }
+
+    public async delete(req: Request, res: Response): Promise<void> {
+        const chatId = req.params.id;
+        if (!chatId) {
+            throw new Error("L'ID du chat est requis");
+        }
+        
+        const deleted = await chatRepository.delete(chatId);
+        if (!deleted) {
+            res.status(204).send();
+            return;
+        }
+        
+        const newCount = parseInt(req.query.newCount as string, 10) - 1;
+        res.status(200).send(ChatCount({ count: newCount }));
+    }
 }
 
 export const chatController = new ChatController();

@@ -45,3 +45,5 @@ chatRouter.post('/updateTitle/:id',
 );
 
 chatRouter.get('/:id', connectionRequired, validateParams(idSchema), isChatOwner, chatController.chat)
+
+chatRouter.delete('/delete/:id', connectionRequired, validateParams(idSchema), isChatOwner, chatController.delete);
