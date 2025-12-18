@@ -8,6 +8,7 @@ import { userRouter } from './user/user.router';
 import session from 'express-session'; 
 import { connectionRequired } from './user/user.middleware';
 import { valkeyStore } from './services/valkey';
+import { discussRouter } from './discuss/discuss.router';
 
 const app = express();
 
@@ -23,6 +24,7 @@ const port = process.env.PORT;
 app.use(express.static('public'));
 app.use('/chat', connectionRequired, chatRouter);
 app.use('/user', userRouter)
+app.use('/discuss', discussRouter);
 
 app.get('/', (req: Request, res: Response) => {
     const page = HomeView({ title : 'Homeview', user: req.session.user })
